@@ -1,4 +1,5 @@
 import heapq
+import time
 
 class Node():
     def __init__(self, parent=None, position=None):
@@ -89,7 +90,7 @@ def astar_path(maze, start, end):
 def print_maze_with_path(maze, path):
     """
     Function to print the maze with the path marked
-    - '*' for path cells
+    '*' for path cells
     """
     #visualization
     maze_copy = [row[:] for row in maze]  # Create a deep copy to avoid modifying the original maze
@@ -104,7 +105,7 @@ def print_maze_with_path(maze, path):
 
 
 def main():
-    # Example maze where 0 is open, 1 is blocked
+    # Example maze where 0 is open, other integer is blocked
     maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -118,14 +119,16 @@ def main():
 
     start = (0, 0)
     end = (7, 6)
-
+    start_time = time.time()
     path = astar_path(maze, start, end)
-
+    end_time = time.time()
     if path:
         print("Path found! Visualizing the maze with the path:")
         print_maze_with_path(maze, path)
     else:
         print("No path found!")
+
+    print(f'Time taken: {end_time - start_time:.5f} seconds')
 
 
 if __name__ == '__main__':
