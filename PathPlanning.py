@@ -16,6 +16,17 @@ class Node():
     def __lt__(self, other):
         return self.f < other.f
 
+def get_cost(value):
+    if value == 0:
+        return 1 #considered open space (low cost)
+    elif value == 1:
+        return 5 #simple obstacle (like a small pothole/puddle of water)
+    elif value == 2:
+        return 10 #moderate obstacle (like large body of water)
+    elif value == 3:
+        return 15 #difficult obstacle (like extremely large pothole)
+    else:
+        return 20 #extremely difficult obstacles
 
 def astar_path(maze, start, end):
     start_node = Node(None, start)
@@ -52,7 +63,7 @@ def astar_path(maze, start, end):
                 # Check if the node is within bounds and not blocked
                 if node_position[0] >= len(maze) or node_position[0] < 0 or node_position[1] >= len(maze[0]) or node_position[1] < 0:
                     continue
-                if maze[node_position[0]][node_position[1]] != 0:
+                if maze[node_position[0]][node_position[1]] not in [0, 1]:
                     continue
 
                 new_node = Node(current_node, node_position)
@@ -64,9 +75,10 @@ def astar_path(maze, start, end):
             if child.position in closed_list:
                 continue
 
-            child.g = current_node.g + 1
+            child.g = child.g = current_node.g + get_cost(maze[child.position[0]][child.position[1]])
             child.h = (child.position[0] - end_node.position[0]) ** 2 + (child.position[1] - end_node.position[1]) ** 2
             child.f = child.g + child.h
+            print(f"Child position: {child.position}, g: {child.g}")
 
             # If child is not in open list, add it
             found_in_open = False
@@ -106,15 +118,15 @@ def print_maze_with_path(maze, path):
 
 def main():
     # Example maze where 0 is open, other integer is blocked
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 5],
+    maze = [[0, 5, 2, 0, 1, 0, 3, 0, 0, 0],
+            [0, 9, 1, 2, 1, 7, 0, 0, 0, 0],
+            [1, 1, 1, 0, 1, 0, 0, 2, 9, 0],
+            [0, 5, 0, 0, 1, 3, 0, 0, 0, 0],
+            [5, 2, 1, 3, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 2, 0, 1, 3, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 6, 0, 0],
+            [0, 0, 0, 4, 0, 2, 0, 0, 0, 0],
+            [0, 0, 0, 0, 3, 0, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     start = (0, 0)
